@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const QuickBooks = require('node-quickbooks')
 const qbOAuth = require('./quickbookOAuth.json')
-let gallery_tmpo = require('./gallery.json')
 const PORT = process.env.PORT || 5000
+const gallery_tmpo = require('./gallery.json')
 
 const consumerKey = 'Q04Nh3GPuQZtJah8cPwymbrVWaiZ17cw4d4PpdmZQAPl7Hu7DB';
 const consumerSecret = 'JSij4Gw4aZNMZlAjt5VT8Vi3tZRkd3lHLBmCsmJL';
@@ -49,6 +49,7 @@ app.get('/item', (req, res) => {
     qbo.findItems(query, function(error, item){
 	const rs = [];
 	const items = item.QueryResponse.Item;
+	tmp_gallery = JSON.parse(JSON.stringify(gallery_tmpo));
 	for (i = 0; i < items.length; i++) {
 	    block = {
 		"title": items[i].Name,
@@ -62,9 +63,9 @@ app.get('/item', (req, res) => {
 		    }
 		]
 	    }
-	    gallery_tmpo.attachment.payload.elements.push(block);
+	    tmp_gallery.attachment.payload.elements.push(block);
 	}
-	rs.push(gallery_tmpo);
+	rs.push(tmp_gallery);
 	res.send(rs);
     })
 });
