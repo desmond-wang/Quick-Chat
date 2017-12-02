@@ -15,13 +15,13 @@ app.get('/item/:id', (req, res) => {
     console.log(id);
     const item = qbo.getItem(id, (error, item) => console.log(item))
     console.log(item);
-    const rs = [];
+    const rs = item;//getItem(item);
     rs.push({});
     res.send(rs);
 });
 
-function getItem(id) {
-    qbo.getItem(id, (error, item) => console.log(item))
+function getItem(item) {
+    
 }
     
 app.listen(PORT, () => console.log(`Chatfuel Bot-Server listening on port ${ PORT }`));
