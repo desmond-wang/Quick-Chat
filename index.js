@@ -64,15 +64,9 @@ app.get('/item/:id', (req, res) => {
 app.get('/item', (req, res) => {
     const category = req.query.category;
     let query = [
-<<<<<<< HEAD
 	{fetchAll: true},
 	{Type: 'Inventory'},
 	{field: 'FullyQualifiedName', value: `${category}%`, operator: 'LIKE'}
-=======
-	{fetchAll: true}, 
-	{Type: 'Inventory'}, 
-	{field: 'FullyQualifiedName', value: `${category}%`, operator: 'LIKE'},
->>>>>>> c57a80b24038f659fca8f662d43cd5e574c716cc
     ];
     qbo.findItems(query, function(error, item){
 	const rs = [];
@@ -111,10 +105,12 @@ app.get('/invoices', (req, res) => {
     const inv = JSON.parse(JSON.stringify(invoices_tmpo));
     inv.CustomerRef.value = query.customer_id;
     inv.Line[0].SalesItemLineDetail.ItemRef.value = query.item_id;
+	console.log(inv);
     qbo.createInvoice(inv, (error, invoice) => {
 	const rs = [];
-	let s = invoice.Line[0].Description + '\n';
+	let s = ''; 
 	qbo.getItem(query.item_id, function(error, item){
+	    s = item.Name + '\n';
 	    s = s + item.UnitPrice + '\n';
 	})
 	s = s + 'Shipping Address' + '\n';
