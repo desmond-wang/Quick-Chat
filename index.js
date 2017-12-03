@@ -180,7 +180,7 @@ app.get('/payment', (req, res) => {
           "type": "template",
           "payload": {
             "template_type": "button",
-            "text": "Hello!",
+            "text": "How would you like to pay?",
             "buttons": [
               {
                 "type": "web_url",
