@@ -77,7 +77,7 @@ app.get('/item', (req, res) => {
 		"title": items[i].Name,
 		"image_url": items[i].PurchaseDesc,
 		//	"subtitle": items[i].Description,
-		"subtitle": [item.Description, item.UnitPrice],
+		"subtitle": [items[i].Description, items[i].UnitPrice],
 		"buttons":[
 		    {
 			"type":"web_url",
