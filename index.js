@@ -82,7 +82,7 @@ app.get('/item', (req, res) => {
 			"title":"View Item"
 		    },
 		    {
-			"url": `${urlbase}/item/:${items[i].Id}` ,
+			"url": `${urlbase}/invoices/:${items[i].Id}` ,
 			"type":"json_plugin_url",
 			"title":"Buy"
 		    }
@@ -95,8 +95,9 @@ app.get('/item', (req, res) => {
     })
 });
 
-app.post('/invoices', (req, res) => {
-    const body = req.body
+app.post('/invoices/:id', (req, res) => {
+    const id = req.params.id;
+    console.log(id);
 })
 
 
