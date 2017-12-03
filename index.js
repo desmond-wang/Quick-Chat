@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path')
 const request = require('request')
 const app = express();
 const QuickBooks = require('node-quickbooks')
@@ -54,6 +55,11 @@ app.get('/item/:id', (req, res) => {
 	    "image_url": item.PurchaseDesc,
 	    "subtitle": `${item.Description}\n$${item.UnitPrice}`,
 	    "buttons":[
+		{
+		    "type":"web_url",
+		    "url":"`{urlbase}/camera`",
+		    "title":"View Item"
+		},
 		{
 		    "url": `${urlbase}/payment?item_id=${item.Id}&customer_id=2` ,
 		    "type":"json_plugin_url",
@@ -195,6 +201,11 @@ app.get('/payment', (req, res) => {
     })
 	})
 })
+
+
+app.get('/camera',function(req,res){
+  res.sendFile(path.join(__dirname+'/cam.html'));
+});
 
 
 app.listen(PORT, () => console.log(`Chatfuel Bot-Server listening on port ${ PORT }`));
