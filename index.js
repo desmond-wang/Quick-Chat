@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 5000
 const gallery_tmpo = require('./gallery.json')
 const postback_tmpo = require('./postback.json')
 const invoices_tmpo = require('./invoice.json')
+const payment_tmpo = require('./payment.json')
 const urlbase = 'https://quickbookhackathon.herokuapp.com'
 
 const consumerKey = 'Q04Nh3GPuQZtJah8cPwymbrVWaiZ17cw4d4PpdmZQAPl7Hu7DB';

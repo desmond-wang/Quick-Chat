@@ -1,0 +1,17 @@
+{
+    "CustomerRef":
+    {
+        "value": "2",
+        "name": "Desmond Wang"
+    },
+    "TotalAmt": 55.00,
+    "Line": [
+    {
+        "Amount": 55.00,
+        "LinkedTxn": [
+        {
+            "TxnId": "224",
+            "TxnType": "Invoice"
+        }]
+    }]
+}
