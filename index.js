@@ -47,7 +47,7 @@ app.get('/item/:id', (req, res) => {
 		    "title":"View Item"
 		},
 		{
-		    "url": `${urlbase}/items/:${item.Id}` ,
+		    "url": `${urlbase}/item/:${item.Id}` ,
 		    "type":"json_plugin_url",
 		    "title":"Buy"
 		}
@@ -82,7 +82,7 @@ app.get('/item', (req, res) => {
 			"title":"View Item"
 		    },
 		    {
-			"url": `${urlbase}/items/:${items[i].Id}` ,
+			"url": `${urlbase}/item/:${items[i].Id}` ,
 			"type":"json_plugin_url",
 			"title":"Buy"
 		    }
