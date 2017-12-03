@@ -93,11 +93,6 @@ app.get('/item', (req, res) => {
 		    "subtitle": `${items[i].Description}\n$${items[i].UnitPrice}`,
 		    "buttons":[
 			{
-			    "type":"web_url",
-			    "url":"https://rockets.chatfuel.com/store/shirt",
-			    "title":"View Item"
-			},
-			{
 			    "url": `${urlbase}/payment?item_id=${items[i].Id}&customer_id=2` ,
 			    "type":"json_plugin_url",
 			    "title":"Buy"
@@ -119,6 +114,7 @@ app.get('/invoices', (req, res) => {
     inv.Line[0].SalesItemLineDetail.ItemRef.value = query.item_id;
 	console.log(inv);
     qbo.createInvoice(inv, (error, invoice) => {
+	console.log(error);
 	const rs = [];
 	let s = '';
 	qbo.getItem(query.item_id, function(error, item){
@@ -137,7 +133,6 @@ app.get('/invoices', (req, res) => {
 })
 
 app.get('/payment', (req, res) => {
-
   const query = req.query ;
   qbo.getItem(query.item_id, function(error, item){
     const price = item.UnitPrice
@@ -191,7 +186,7 @@ app.get('/payment', (req, res) => {
           "type": "template",
           "payload": {
             "template_type": "button",
-            "text": "Hello!",
+            "text": "How would you like to pay?",
             "buttons": [
               {
                 "type": "web_url",
