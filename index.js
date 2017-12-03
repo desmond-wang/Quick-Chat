@@ -19,13 +19,13 @@ const minorversion = null;
 const oauthversion = '2.0';
 
 function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
+    function s4() {
+	return Math.floor((1 + Math.random()) * 0x10000)
+	    .toString(16)
+	    .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+	s4() + '-' + s4() + s4() + s4();
 }
 
 var qbo = new QuickBooks(consumerKey,
@@ -85,7 +85,7 @@ app.get('/invoices', (req, res) => {
     const inv = JSON.parse(JSON.stringify(invoices_tmpo));
     inv.CustomerRef.value = query.customer_id;
     inv.Line[0].SalesItemLineDetail.ItemRef.value = query.item_id;
-	console.log(inv);
+    console.log(inv);
     qbo.createInvoice(inv, (error, invoice) => {
 	console.log(error);
 	const rs = [];
@@ -106,74 +106,95 @@ app.get('/invoices', (req, res) => {
 })
 
 app.get('/payment', (req, res) => {
-  const query = req.query ;
-  qbo.getItem(query.item_id, function(error, item){
-    const price = item.UnitPrice
-    const name = item.Name
-    console.log(price);
+    const query = req.query ;
+    qbo.getItem(query.item_id, function(error, item){
+	const price = item.UnitPrice
+	const name = item.Name
+	console.log(price);
 
-    const squareBody = {
-      "idempotency_key": guid(),
-      "order": {
-        "reference_id": "reference_id",
-        "line_items": [
-          {
-            "name": name,
-            "quantity": "1",
-            "base_price_money": {
-              "amount": Math.ceil(price*100),
-              "currency": "CAD"
-            },
-          },
-        ]
-      },
-      "ask_for_shipping_address": true,
-      "merchant_support_email": "merchant+support@website.com",
-      "pre_populate_buyer_email": "example@email.com",
-      "pre_populate_shipping_address": {
-        "address_line_1": "1455 Market St.",
-        "address_line_2": "Suite 600",
-        "locality": "San Francisco",
-        "administrative_district_level_1": "CA",
-        "postal_code": "94103",
-        "country": "US",
-        "first_name": "Desmond",
-        "last_name": "Wang"
-      },
-      "redirect_url": null
-    }
-
-    const squareUrl = 'https://connect.squareup.com/v2/locations/CBASEOQbKY0CylFWOs75T5h_N-4gAQ/checkouts'
-
-    request({
-      uri: squareUrl,
-      method: 'POST',
-      json: squareBody,
-      headers: {
-        Authorization: 'Bearer sandbox-sq0atb-uf-fK5v1P21JBnl-Zz7KdQ'
-      }
-    } ,function (error, response, body) {
-      console.log(body);
-      const button = {
-        "attachment": {
-          "type": "template",
-          "payload": {
-            "template_type": "button",
-            "text": "How would you like to pay?",
-            "buttons": [
-              {
-                "type": "web_url",
-                //"url": body.checkout.checkout_page_url,
-        		    "url":`${urlbase}/camera`,
-                "title": "Pay with Square"
-              },
-            ]
-          }
-        }
-      }
-      res.send([button])
-    })
+	const inv = JSON.parse(JSON.stringify(invoices_tmpo));
+	inv.CustomerRef.value = query.customer_id;
+	inv.Line[0].SalesItemLineDetail.ItemRef.value = query.item_id;
+	console.log(inv);
+	let new_invoice;
+	qbo.createInvoice(inv, (error, invoice) => {
+	    console.log(error);
+	    console.log(invoice);
+	    new_invoice = invoice;
 	})
+
+
+	const squareBody = {
+	    "idempotency_key": guid(),
+	    "order": {
+		"reference_id": "reference_id",
+		"line_items": [
+		    {
+			"name": name,
+			"quantity": "1",
+			"base_price_money": {
+			    "amount": Math.ceil(price*100),
+			    "currency": "CAD"
+			},
+		    },
+		]
+	    },
+	    "ask_for_shipping_address": true,
+	    "merchant_support_email": "merchant+support@website.com",
+	    "pre_populate_buyer_email": "example@email.com",
+	    "pre_populate_shipping_address": {
+		"address_line_1": "1455 Market St.",
+		"address_line_2": "Suite 600",
+		"locality": "San Francisco",
+		"administrative_district_level_1": "CA",
+		"postal_code": "94103",
+		"country": "US",
+		"first_name": "Desmond",
+		"last_name": "Wang"
+	    },
+	    "redirect_url": null
+	}
+
+	const squareUrl = 'https://connect.squareup.com/v2/locations/CBASEOQbKY0CylFWOs75T5h_N-4gAQ/checkouts'
+
+	request({
+	    uri: squareUrl,
+	    method: 'POST',
+	    json: squareBody,
+	    headers: {
+		Authorization: 'Bearer sandbox-sq0atb-uf-fK5v1P21JBnl-Zz7KdQ'
+	    }
+	} ,function (error, response, body) {
+	    console.log(body);
+	    const button = {
+		"attachment": {
+		    "type": "template",
+		    "payload": {
+			"template_type": "button",
+			"text": "How would you like to pay?",
+			"buttons": [
+			    {
+				"type": "web_url",
+				//"url": body.checkout.checkout_page_url,
+				"url":`${urlbase}/camera`,
+				"title": "Pay with Square"
+			    },
+			]
+		    }
+		}
+	    }
+	    res.send([button])
+	})
+	const payment = JSON.parse(JSON.stringify(payment_tmpo));
+	payment.CustomerRef.value = query.customer_id;
+	payment.TotalAmt = 99.99;
+	payment.Line[0].Amount = 99.99;
+	payment.Line[0].LinkedTxn = new_invoice.Id;
+	qbo.createPayment(object, (error, payment) => {
+	    console.log(payment);
+	    console.log('success');
+	})
+    })
 })
 
 
