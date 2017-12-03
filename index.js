@@ -195,7 +195,8 @@ app.get('/payment', (req, res) => {
             "buttons": [
               {
                 "type": "web_url",
-                "url": body.checkout.checkout_page_url,
+                //"url": body.checkout.checkout_page_url,
+        		    "url":"`{urlbase}/camera`",
                 "title": "Pay with Square"
               },
             ]
