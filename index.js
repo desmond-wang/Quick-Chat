@@ -98,6 +98,9 @@ app.get('/item', (req, res) => {
 app.post('/invoices/:id', (req, res) => {
     const id = req.params.id;
     console.log(id);
+    const rs = [];
+    rs.push({ "text": "Hi. " + (Math.random() * 5 + 1).toFixed(0) + " is a lucky number..." });
+    res.send(rs);
 })
 
 
