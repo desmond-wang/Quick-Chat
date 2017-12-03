@@ -1,0 +1,51 @@
+{
+    
+    "TxnDate": "2017-12-02",
+    "Line": [
+      {
+        "Id": "1",
+        "LineNum": 1,
+        "Description": "Big hole pants",
+        "Amount": 89.95,
+        "DetailType": "SalesItemLineDetail",
+        "SalesItemLineDetail": {
+          "ItemRef": {
+            "value": "30",
+            "name": "Pants:HIgh Rise Cone Denim Slim Straight Jeans in Destrcted"
+          },
+          "UnitPrice": 89.95,
+          "Qty": 1,
+          "TaxCodeRef": {
+            "value": "5"
+          }
+        }
+      }
+    ],
+    "TxnTaxDetail": {
+      "TotalTax": 11.69,
+      "TaxLine": [
+        {
+          "Amount": 11.69,
+          "DetailType": "TaxLineDetail",
+          "TaxLineDetail": {
+            "TaxRateRef": {
+              "value": "12"
+            },
+            "PercentBased": true,
+            "TaxPercent": 13,
+            "NetAmountTaxable": 89.95
+          }
+        }
+      ]
+    },
+    "CustomerRef": {
+      "value": "1",
+      "name": "Adwin Ko"
+    },
+    "SalesTermRef": {
+      "value": "3"
+    },
+    "DueDate": "2018-01-01",
+    "GlobalTaxCalculation": "TaxExcluded",
+    "TotalAmt": 101.64
+  }

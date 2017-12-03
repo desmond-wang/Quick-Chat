@@ -5,6 +5,7 @@ const qbOAuth = require('./quickbookOAuth.json')
 const PORT = process.env.PORT || 5000
 const gallery_tmpo = require('./gallery.json')
 const postback_tmpo = require('./postback.json')
+const invoices_tmpo = require('./invoice.json')
 const urlbase = 'https://quickbookhackathon.herokuapp.com'
 
 const consumerKey = 'Q04Nh3GPuQZtJah8cPwymbrVWaiZ17cw4d4PpdmZQAPl7Hu7DB';
@@ -40,7 +41,7 @@ app.get('/item/:id', (req, res) => {
 	const block = {
 	    "title": item.Name,
 	    "image_url": item.PurchaseDesc,
-	    "subtitle": item.Description,
+	    "subtitle": [item.Description, item.UnitPrice],
 	    "buttons":[
 		{
 		    "type":"web_url",
@@ -48,7 +49,7 @@ app.get('/item/:id', (req, res) => {
 		    "title":"View Item"
 		},
 		{
-		    "url": `${urlbase}/invoices/${item.Id}` ,
+		    "url": `${urlbase}/invoices?item_id=${item.Id}&customer_id=2` ,
 		    "type":"json_plugin_url",
 		    "title":"Buy"
 		}
@@ -75,7 +76,8 @@ app.get('/item', (req, res) => {
 	    block = {
 		"title": items[i].Name,
 		"image_url": items[i].PurchaseDesc,
-		"subtitle": items[i].Description,
+		//	"subtitle": items[i].Description,
+		"subtitle": [item.Description, item.UnitPrice],
 		"buttons":[
 		    {
 			"type":"web_url",
@@ -83,7 +85,7 @@ app.get('/item', (req, res) => {
 			"title":"View Item"
 		    },
 		    {
-			"url": `${urlbase}/invoices/${items[i].Id}` ,
+			"url": `${urlbase}/invoices?item_id=${items[i].Id}&customer_id=2` ,
 			"type":"json_plugin_url",
 			"title":"Buy"
 		    }
@@ -96,12 +98,24 @@ app.get('/item', (req, res) => {
     })
 });
 
-app.get('/invoices/:id', (req, res) => {
-    const id = req.params.id;
-    console.log(id);
-    const rs = [];
-    rs.push({ "text": "Hi. " + (Math.random() * 5 + 1).toFixed(0) + " is a lucky number..." });
-    res.send(rs);
+app.get('/invoices', (req, res) => {
+    const query = req.query;
+    const inv = JSON.parse(JSON.stringify(invoices_tmpo));
+    inv.CustomerRef.value = query.customer_id;
+    inv.Line[0].SalesItemLineDetail.ItemRef.value = query.item_id;
+    qbo.createInvoice(inv, (error, invoice) => {
+	const rs = [];
+	// rs.push({text: invoice.Line[0].Description});
+	// rs.push({text: invoice.Line[0].Amount});
+	// rs.push({text: 'Shipping Address'});
+	// const addr = invoice.ShipAddr;
+	// rs.push({text: addr.Line1});
+	// rs.push({text: addr.City});
+	// rs.push({text: addr.CountrySubDivisioinCode});
+	// rs.push({text: `Postal Code: ${addr.PostalCode}`});
+	rs.push(invoice);
+	res.send(rs);
+    })
 })
 
 
