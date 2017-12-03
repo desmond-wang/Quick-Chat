@@ -47,8 +47,8 @@ app.get('/item/:id', (req, res) => {
 		    "title":"View Item"
 		},
 		{
-		    "type":"json_plugin_url",
 		    "url": `${urlbase}/item/:${item.Id}` ,
+		    "type":"json_plugin_url",
 		    "title":"Buy"
 		}
 	    ]
