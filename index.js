@@ -1,4 +1,5 @@
 const express = require('express');
+const request = require('request')
 const app = express();
 const QuickBooks = require('node-quickbooks')
 const qbOAuth = require('./quickbookOAuth.json')
@@ -14,6 +15,16 @@ const realmId = 123145932193644;
 const oauthTokenSecret = null;
 const minorversion = null;
 const oauthversion = '2.0';
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
 
 var qbo = new QuickBooks(consumerKey,
     consumerSecret,
@@ -108,7 +119,7 @@ app.get('/invoices', (req, res) => {
 	console.log(inv);
     qbo.createInvoice(inv, (error, invoice) => {
 	const rs = [];
-	let s = ''; 
+	let s = '';
 	qbo.getItem(query.item_id, function(error, item){
 	    s = item.Name + '\n';
 	    s = s + item.UnitPrice + '\n';
@@ -130,23 +141,68 @@ app.get('/payment', (req, res) => {
   qbo.getItem(query.item_id, function(error, item){
     const price = item.UnitPrice
     const name = item.Name
-    const button = {
-      "attachment": {
-        "type": "template",
-        "payload": {
-          "template_type": "button",
-          "text": "Hello!",
-          "buttons": [
-            {
-              "type": "web_url",
-              "url": "https://rockets.chatfuel.com",
-              "title": "Visit Website"
+    console.log(price);
+
+    const squareBody = {
+      "idempotency_key": guid(),
+      "order": {
+        "reference_id": "reference_id",
+        "line_items": [
+          {
+            "name": name,
+            "quantity": "1",
+            "base_price_money": {
+              "amount": Math.ceil(price*100),
+              "currency": "CAD"
             },
-          ]
+          },
+        ]
+      },
+      "ask_for_shipping_address": true,
+      "merchant_support_email": "merchant+support@website.com",
+      "pre_populate_buyer_email": "example@email.com",
+      "pre_populate_shipping_address": {
+        "address_line_1": "1455 Market St.",
+        "address_line_2": "Suite 600",
+        "locality": "San Francisco",
+        "administrative_district_level_1": "CA",
+        "postal_code": "94103",
+        "country": "US",
+        "first_name": "Desmond",
+        "last_name": "Wang"
+      },
+      "redirect_url": null
+    }
+
+    const squareUrl = 'https://connect.squareup.com/v2/locations/CBASEOQbKY0CylFWOs75T5h_N-4gAQ/checkouts'
+
+    request({
+      uri: squareUrl,
+      method: 'POST',
+      json: squareBody,
+      headers: {
+        Authorization: 'Bearer sandbox-sq0atb-uf-fK5v1P21JBnl-Zz7KdQ'
+      }
+    } ,function (error, response, body) {
+      console.log(body);
+      const button = {
+        "attachment": {
+          "type": "template",
+          "payload": {
+            "template_type": "button",
+            "text": "Hello!",
+            "buttons": [
+              {
+                "type": "web_url",
+                "url": body.checkout.checkout_page_url,
+                "title": "Pay with Square"
+              },
+            ]
+          }
         }
       }
-    }
-    res.send([button])
+      res.send([button])
+    })
 	})
 })
 
