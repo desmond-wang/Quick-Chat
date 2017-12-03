@@ -4,6 +4,7 @@ const QuickBooks = require('node-quickbooks')
 const qbOAuth = require('./quickbookOAuth.json')
 const PORT = process.env.PORT || 5000
 const gallery_tmpo = require('./gallery.json')
+const urlbase = 'https://quickbookhackathon.herokuapp.com'
 
 const consumerKey = 'Q04Nh3GPuQZtJah8cPwymbrVWaiZ17cw4d4PpdmZQAPl7Hu7DB';
 const consumerSecret = 'JSij4Gw4aZNMZlAjt5VT8Vi3tZRkd3lHLBmCsmJL';
@@ -53,13 +54,18 @@ app.get('/item', (req, res) => {
 	for (i = 0; i < items.length; i++) {
 	    block = {
 		"title": items[i].Name,
-		"image_url":"https://rockets.chatfuel.com/img/shirt.png",
+		"image_url": items[i].PurchaseDesc,
 		"subtitle": items[i].Description,
 		"buttons":[
 		    {
 			"type":"web_url",
 			"url":"https://rockets.chatfuel.com/store/shirt",
 			"title":"View Item"
+		    },
+		    {
+			"url": `${urlbase}/items/:${items[i].Id}` ,
+			"type":"json_plugin_url",
+			"title":"Buy"
 		    }
 		]
 	    }
@@ -69,6 +75,10 @@ app.get('/item', (req, res) => {
 	res.send(rs);
     })
 });
+
+app.post('/invoices', (req, res) => {
+    const body = req.body
+})
 
 
 app.listen(PORT, () => console.log(`Chatfuel Bot-Server listening on port ${ PORT }`));
