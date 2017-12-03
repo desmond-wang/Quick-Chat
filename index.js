@@ -41,7 +41,7 @@ app.get('/item/:id', (req, res) => {
 	const block = {
 	    "title": item.Name,
 	    "image_url": item.PurchaseDesc,
-	    "subtitle": [item.Description, item.UnitPrice],
+	    "subtitle": `${item.Description}\n$${item.UnitPrice}`,
 	    "buttons":[
 		{
 		    "type":"web_url",
@@ -76,8 +76,7 @@ app.get('/item', (req, res) => {
 	    block = {
 		"title": items[i].Name,
 		"image_url": items[i].PurchaseDesc,
-		//	"subtitle": items[i].Description,
-		"subtitle": `${items[i].Description}\n${items[i].UnitPrice}`,
+		"subtitle": `${items[i].Description}\n$${items[i].UnitPrice}`,
 		"buttons":[
 		    {
 			"type":"web_url",
@@ -105,15 +104,16 @@ app.get('/invoices', (req, res) => {
     inv.Line[0].SalesItemLineDetail.ItemRef.value = query.item_id;
     qbo.createInvoice(inv, (error, invoice) => {
 	const rs = [];
-	// rs.push({text: invoice.Line[0].Description});
-	// rs.push({text: invoice.Line[0].Amount});
-	// rs.push({text: 'Shipping Address'});
-	// const addr = invoice.ShipAddr;
-	// rs.push({text: addr.Line1});
-	// rs.push({text: addr.City});
-	// rs.push({text: addr.CountrySubDivisioinCode});
-	// rs.push({text: `Postal Code: ${addr.PostalCode}`});
-	rs.push(invoice);
+	rs.push({text: invoice.Line[0].Description});
+	qbo.getItem(query.item_id, function(error, item){
+	    rs.push(item.UnitPrice);
+	})
+	rs.push({text: 'Shipping Address'});
+	const addr = invoice.ShipAddr;
+	rs.push({text: addr.Line1});
+	rs.push({text: addr.City});
+	rs.push({text: addr.CountrySubDivisionCode});
+	rs.push({text: `Postal Code: ${addr.PostalCode}`});
 	res.send(rs);
     })
 })
