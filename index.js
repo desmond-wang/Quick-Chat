@@ -66,31 +66,34 @@ app.get('/item', (req, res) => {
     let query = [
 	{fetchAll: true}, 
 	{Type: 'Inventory'}, 
-	{field: 'FullyQualifiedName', value: `${category}%`, operator: 'LIKE'}
+	{field: 'FullyQualifiedName', value: `${category}%`, operator: 'LIKE'},
     ];
     qbo.findItems(query, function(error, item){
 	const rs = [];
 	const items = item.QueryResponse.Item;
 	tmp_gallery = JSON.parse(JSON.stringify(gallery_tmpo));
 	for (i = 0; i < items.length; i++) {
-	    block = {
-		"title": items[i].Name,
-		"image_url": items[i].PurchaseDesc,
-		"subtitle": `${items[i].Description}\n$${items[i].UnitPrice}`,
-		"buttons":[
-		    {
-			"type":"web_url",
-			"url":"https://rockets.chatfuel.com/store/shirt",
-			"title":"View Item"
-		    },
-		    {
-			"url": `${urlbase}/invoices?item_id=${items[i].Id}&customer_id=2` ,
-			"type":"json_plugin_url",
-			"title":"Buy"
-		    }
-		]
+	    const price = items[i].UnitPrice;
+	    if (price > req.query.low && price <= req.query.high) {
+		block = {
+		    "title": items[i].Name,
+		    "image_url": items[i].PurchaseDesc,
+		    "subtitle": `${items[i].Description}\n$${items[i].UnitPrice}`,
+		    "buttons":[
+			{
+			    "type":"web_url",
+			    "url":"https://rockets.chatfuel.com/store/shirt",
+			    "title":"View Item"
+			},
+			{
+			    "url": `${urlbase}/invoices?item_id=${items[i].Id}&customer_id=2` ,
+			    "type":"json_plugin_url",
+			    "title":"Buy"
+			}
+		    ]
+		}
+		tmp_gallery.attachment.payload.elements.push(block);
 	    }
-	    tmp_gallery.attachment.payload.elements.push(block);
 	}
 	rs.push(tmp_gallery);
 	res.send(rs);
