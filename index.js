@@ -22,8 +22,8 @@ var qbo = new QuickBooks(consumerKey,
     realmId,
     true, // use the sandbox?
     true,
-    minorversion, 
-    oauthversion, 
+    minorversion,
+    oauthversion,
     qbOAuth.refresh_token)
 
 
@@ -49,7 +49,7 @@ app.get('/item/:id', (req, res) => {
 		    "title":"View Item"
 		},
 		{
-		    "url": `${urlbase}/invoices?item_id=${item.Id}&customer_id=2` ,
+		    "url": `${urlbase}/payment?item_id=${item.Id}&customer_id=2` ,
 		    "type":"json_plugin_url",
 		    "title":"Buy"
 		}
@@ -64,8 +64,8 @@ app.get('/item/:id', (req, res) => {
 app.get('/item', (req, res) => {
     const category = req.query.category;
     let query = [
-	{fetchAll: true}, 
-	{Type: 'Inventory'}, 
+	{fetchAll: true},
+	{Type: 'Inventory'},
 	{field: 'FullyQualifiedName', value: `${category}%`, operator: 'LIKE'}
     ];
     qbo.findItems(query, function(error, item){
@@ -98,7 +98,7 @@ app.get('/item', (req, res) => {
 });
 
 app.get('/invoices', (req, res) => {
-    const query = req.query;
+    const query = req.query ;
     const inv = JSON.parse(JSON.stringify(invoices_tmpo));
     inv.CustomerRef.value = query.customer_id;
     inv.Line[0].SalesItemLineDetail.ItemRef.value = query.item_id;
@@ -119,8 +119,31 @@ app.get('/invoices', (req, res) => {
     })
 })
 
+app.get('/payment', (req, res) => {
+
+  const query = req.query ;
+  qbo.getItem(query.item_id, function(error, item){
+    const price = item.UnitPrice
+    const name = item.Name
+    const button = {
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "button",
+          "text": "Hello!",
+          "buttons": [
+            {
+              "type": "web_url",
+              "url": "https://rockets.chatfuel.com",
+              "title": "Visit Website"
+            },
+          ]
+        }
+      }
+    }
+    res.send(button)
+	})
+})
+
 
 app.listen(PORT, () => console.log(`Chatfuel Bot-Server listening on port ${ PORT }`));
- 
-
-
