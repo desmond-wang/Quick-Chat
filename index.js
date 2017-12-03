@@ -86,7 +86,7 @@ app.get('/item', (req, res) => {
 			    "title":"View Item"
 			},
 			{
-			    "url": `${urlbase}/invoices?item_id=${items[i].Id}&customer_id=2` ,
+			    "url": `${urlbase}/payment?item_id=${items[i].Id}&customer_id=2` ,
 			    "type":"json_plugin_url",
 			    "title":"Buy"
 			}
