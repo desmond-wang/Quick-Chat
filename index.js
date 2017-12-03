@@ -55,11 +55,6 @@ app.get('/item/:id', (req, res) => {
 	    "subtitle": `${item.Description}\n$${item.UnitPrice}`,
 	    "buttons":[
 		{
-		    "type":"web_url",
-		    "url":"https://rockets.chatfuel.com/store/shirt",
-		    "title":"View Item"
-		},
-		{
 		    "url": `${urlbase}/payment?item_id=${item.Id}&customer_id=2` ,
 		    "type":"json_plugin_url",
 		    "title":"Buy"
@@ -91,11 +86,6 @@ app.get('/item', (req, res) => {
 		    "image_url": items[i].PurchaseDesc,
 		    "subtitle": `${items[i].Description}\n$${items[i].UnitPrice}`,
 		    "buttons":[
-			{
-			    "type":"web_url",
-			    "url":"https://rockets.chatfuel.com/store/shirt",
-			    "title":"View Item"
-			},
 			{
 			    "url": `${urlbase}/payment?item_id=${items[i].Id}&customer_id=2` ,
 			    "type":"json_plugin_url",
