@@ -104,16 +104,17 @@ app.get('/invoices', (req, res) => {
     inv.Line[0].SalesItemLineDetail.ItemRef.value = query.item_id;
     qbo.createInvoice(inv, (error, invoice) => {
 	const rs = [];
-	rs.push({text: invoice.Line[0].Description});
+	let s = invoice.Line[0].Description + '\n';
 	qbo.getItem(query.item_id, function(error, item){
-	    rs.push(item.UnitPrice);
+	    s = s + item.UnitPrice + '\n';
 	})
-	rs.push({text: 'Shipping Address'});
+	s = s + 'Shipping Address' + '\n';
 	const addr = invoice.ShipAddr;
-	rs.push({text: addr.Line1});
-	rs.push({text: addr.City});
-	rs.push({text: addr.CountrySubDivisionCode});
-	rs.push({text: `Postal Code: ${addr.PostalCode}`});
+	s = s +  addr.Line1 + '\n';
+	s = s +  addr.City + '\n';
+	s = s +  addr.CountrySubDivisionCode + '\n';
+	s = s +  addr.PostalCode + '\n';
+	rs.push({text:s});
 	res.send(rs);
     })
 })
