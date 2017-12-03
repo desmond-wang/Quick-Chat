@@ -146,7 +146,7 @@ app.get('/payment', (req, res) => {
         }
       }
     }
-    res.send(button)
+    res.send([button])
 	})
 })
 
