@@ -35,7 +35,26 @@ app.get('/item/:id', (req, res) => {
     const id = req.params.id;
     qbo.getItem(id, function(error, item){
 	const rs = [];
-	rs.push(item);
+	tmp_gallery = JSON.parse(JSON.stringify(gallery_tmpo));
+	const block = {
+	    "title": item.Name,
+	    "image_url": item.PurchaseDesc,
+	    "subtitle": item.Description,
+	    "buttons":[
+		{
+		    "type":"web_url",
+		    "url":"https://rockets.chatfuel.com/store/shirt",
+		    "title":"View Item"
+		},
+		{
+		    "url": `${urlbase}/items/:${item.Id}` ,
+		    "type":"json_plugin_url",
+		    "title":"Buy"
+		}
+	    ]
+	}
+	tmp_gallery.attachment.payload.elements.push(block);
+	rs.push(tmp_gallery);
 	res.send(rs);
     })
 });
