@@ -1,0 +1,16 @@
+{
+    "attachment": {
+	"payload":{
+	    "template_type": "button",
+	    "text": "test JSON with postback",
+	    "buttons": [
+		{
+		    "url": "http://pastebin.com/raw/bYwUN7un",
+		    "type":"json_plugin_url",
+		    "title":"go"
+		}
+	    ]
+	},
+	"type": "template"
+    }
+}

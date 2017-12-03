@@ -4,6 +4,7 @@ const QuickBooks = require('node-quickbooks')
 const qbOAuth = require('./quickbookOAuth.json')
 const PORT = process.env.PORT || 5000
 const gallery_tmpo = require('./gallery.json')
+const postback_tmpo = require('./postback.json')
 const urlbase = 'https://quickbookhackathon.herokuapp.com'
 
 const consumerKey = 'Q04Nh3GPuQZtJah8cPwymbrVWaiZ17cw4d4PpdmZQAPl7Hu7DB';
@@ -47,7 +48,7 @@ app.get('/item/:id', (req, res) => {
 		    "title":"View Item"
 		},
 		{
-		    "url": `${urlbase}/item/:${item.Id}` ,
+		    "url": `${urlbase}/invoices/${item.Id}` ,
 		    "type":"json_plugin_url",
 		    "title":"Buy"
 		}
@@ -82,7 +83,7 @@ app.get('/item', (req, res) => {
 			"title":"View Item"
 		    },
 		    {
-			"url": `${urlbase}/invoices/:${items[i].Id}` ,
+			"url": `${urlbase}/invoices/${items[i].Id}` ,
 			"type":"json_plugin_url",
 			"title":"Buy"
 		    }
@@ -95,7 +96,7 @@ app.get('/item', (req, res) => {
     })
 });
 
-app.post('/invoices/:id', (req, res) => {
+app.get('/invoices/:id', (req, res) => {
     const id = req.params.id;
     console.log(id);
     const rs = [];
