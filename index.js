@@ -45,34 +45,6 @@ app.get('/', (req, res) => {
     res.send(rs);
 });
 
-app.get('/item/:id', (req, res) => {
-    const id = req.params.id;
-    qbo.getItem(id, function(error, item){
-	const rs = [];
-	tmp_gallery = JSON.parse(JSON.stringify(gallery_tmpo));
-	const block = {
-	    "title": item.Name,
-	    "image_url": item.PurchaseDesc,
-	    "subtitle": `${item.Description}\n$${item.UnitPrice}`,
-	    "buttons":[
-		{
-		    "type":"web_url",
-		    "url":"`{urlbase}/camera`",
-		    "title":"View Item"
-		},
-		{
-		    "url": `${urlbase}/payment?item_id=${item.Id}&customer_id=2` ,
-		    "type":"json_plugin_url",
-		    "title":"Buy"
-		}
-	    ]
-	}
-	tmp_gallery.attachment.payload.elements.push(block);
-	rs.push(tmp_gallery);
-	res.send(rs);
-    })
-});
-
 app.get('/item', (req, res) => {
     const category = req.query.category;
     let query = [
@@ -191,7 +163,7 @@ app.get('/payment', (req, res) => {
               {
                 "type": "web_url",
                 //"url": body.checkout.checkout_page_url,
-        		    "url":"`{urlbase}/camera`",
+        		    "url":`${urlbase}/camera`,
                 "title": "Pay with Square"
               },
             ]
